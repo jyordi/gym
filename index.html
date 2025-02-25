@@ -1,46 +1,89 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ejercicios por Categoría</title>
+  <title>Exercises by Category</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600&display=swap');
     body { 
-      font-family: 'Roboto', sans-serif; 
+      font-family: 'SF Pro Display', sans-serif; 
       text-align: center; 
-      background-color: #f4f4f4; 
+      background-color: #F2F2F7; 
       margin: 0;
       padding: 0;
+      overflow-x: hidden;
     }
-    h1 {
-      color: #333;
-      margin-top: 20px;
-      font-size: 2.5em;
+    header {
+      background-color: #007AFF;
+      padding: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      transition: top 0.3s;
     }
-    #category { 
-      margin: 10px; 
-      padding: 10px; 
-      font-size: 1em; 
-      border-radius: 5px; 
-      border: 1px solid #ddd; 
-      background-color: #fff; 
-      width: 200px;
+    header img {
+      width: 120px;
+      transition: transform 0.3s;
+    }
+    header img:hover {
+      transform: rotate(360deg);
+    }
+    header h1 {
+      font-size: 2em;
+      color: #FFFFFF;
+      margin: 0;
+    }
+    main {
+      padding: 100px 20px 20px;
+      background-color: #F2F2F7;
+      transition: padding 0.3s;
+    }
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+      animation: fadeIn 1s ease-in-out;
+    }
+    .filters label {
+      font-size: 1em;
+      color: #1C1C1E;
+    }
+    .filters select {
+      font-size: 1em;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid #D1D1D6;
+      background-color: #FFFFFF;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s;
+    }
+    .filters select:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
     .exercise-container { 
       display: flex; 
       flex-wrap: wrap; 
       justify-content: center; 
       gap: 20px;
-      padding: 20px;
+      animation: fadeIn 1s ease-in-out;
     }
     .exercise-card {
-      background-color: #fff;
-      border: 1px solid #ddd;
+      background-color: #FFFFFF;
+      border: 1px solid #D1D1D6;
       padding: 20px;
-      margin: 10px;
-      width: 280px;
+      width: 100%;
+      max-width: 280px;
       text-align: left;
-      border-radius: 10px;
+      border-radius: 12px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       cursor: pointer;
@@ -52,16 +95,20 @@
     .exercise-card img { 
       width: 100%; 
       height: auto; 
-      border-radius: 10px;
+      border-radius: 12px;
+      transition: transform 0.3s;
+    }
+    .exercise-card img:hover {
+      transform: scale(1.1);
     }
     .exercise-card h3 {
       font-size: 1.5em;
-      color: #444;
+      color: #1C1C1E;
       margin: 10px 0;
     }
     .exercise-card p {
       font-size: 1em;
-      color: #666;
+      color: #8E8E93;
       line-height: 1.6;
     }
     .exercise-card ul {
@@ -73,13 +120,10 @@
       margin-bottom: 8px;
     }
     .exercise-card strong {
-      color: #444;
-    }
-    select, option {
-      font-size: 1em;
+      color: #1C1C1E;
     }
 
-    /* Estilo del Modal */
+    /* Modal Style */
     .modal {
       display: none;
       position: fixed;
@@ -91,21 +135,29 @@
       overflow: auto;
       background-color: rgba(0, 0, 0, 0.4);
       padding-top: 60px;
+      animation: slideIn 0.5s ease-out;
     }
     .modal-content {
-      background-color: #fff;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
       margin: 5% auto;
       padding: 20px;
-      border: 1px solid #888;
+      border: 1px solid rgba(255, 255, 255, 0.18);
       width: 80%;
-      border-radius: 10px;
+      border-radius: 16px;
       max-width: 900px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      position: relative;
+      animation: fadeIn 0.5s ease-in-out;
     }
     .close {
       color: #aaa;
-      float: right;
+      position: absolute;
+      top: 10px;
+      right: 20px;
       font-size: 28px;
       font-weight: bold;
+      transition: color 0.3s;
     }
     .close:hover,
     .close:focus {
@@ -113,8 +165,29 @@
       text-decoration: none;
       cursor: pointer;
     }
+    .modal-content h3 {
+      font-size: 2em;
+      color: #1C1C1E;
+      margin-bottom: 10px;
+    }
+    .modal-content p {
+      font-size: 1em;
+      color: #8E8E93;
+      line-height: 1.6;
+    }
+    .modal-content ul {
+      padding-left: 20px;
+      font-size: 1em;
+      color: #555;
+    }
+    .modal-content ul li {
+      margin-bottom: 8px;
+    }
+    .modal-content strong {
+      color: #1C1C1E;
+    }
 
-    /* Estilo del indicador de carga */
+    /* Loading Indicator Style */
     #loading {
       display: none;
       position: fixed;
@@ -123,44 +196,86 @@
       transform: translate(-50%, -50%);
       font-size: 20px;
       color: #000;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .filters {
+        flex-direction: column;
+        align-items: center;
+      }
+      .exercise-card {
+        width: 100%;
+        max-width: none;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Ejercicios por Categoría</h1>
-  <label for="level">Selecciona el nivel:</label>
-  <select id="level"></select>
-  <label for="primaryMuscles">Selecciona el músculo principal:</label>
-  <select id="primaryMuscles"></select>
-  <div id="exercise-list" class="exercise-container"></div>
+  <header>
+    <img src="logo.png" alt="Super GYM Logo">
+    <h1>SmartGym</h1>
+  </header>
+  <main>
+    <br>
+    <br>
+    <h1>Exercises by Category</h1>
+    <div class="filters">
+      <label for="level">Select Level:</label>
+      <select id="level"></select>
+      <label for="primaryMuscles">Select Primary Muscle:</label>
+      <select id="primaryMuscles"></select>
+    </div>
+    <div id="exercise-list" class="exercise-container"></div>
+  </main>
   
   <!-- Modal -->
   <div id="myModal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
       <h3 id="modal-title"></h3>
-      <p><strong>Equipo:</strong> <span id="modal-equipment"></span></p>
-      <p><strong>Fuerza:</strong> <span id="modal-force"></span></p>
-      <p><strong>Nivel:</strong> <span id="modal-level"></span></p>
-      <p><strong>Descripción:</strong></p>
+      <p><strong>Equipment:</strong> <span id="modal-equipment"></span></p>
+      <p><strong>Force:</strong> <span id="modal-force"></span></p>
+      <p><strong>Level:</strong> <span id="modal-level"></span></p>
+      <p><strong>Description:</strong></p>
       <ul id="modal-instructions"></ul>
-      <p><strong>Músculos principales:</strong> <span id="modal-primary-muscles"></span></p>
-      <p><strong>Músculos secundarios:</strong> <span id="modal-secondary-muscles"></span></p>
+      <p><strong>Primary Muscles:</strong> <span id="modal-primary-muscles"></span></p>
+      <p><strong>Secondary Muscles:</strong> <span id="modal-secondary-muscles"></span></p>
       <div id="modal-images-container"></div>
     </div>
   </div>
 
-  <!-- Indicador de carga -->
-  <div id="loading">Cargando...</div>
+  <!-- Loading Indicator -->
+  <div id="loading">Loading...</div>
 
   <script>
     let exercisesData = [];
     let selectedExercise = null;
 
-    // Función para cargar el JSON de ejercicios
+    // Function to load the JSON of exercises
     async function loadExercises() {
       try {
-        // Mostrar el indicador de carga
+        // Show loading indicator
         document.getElementById('loading').style.display = 'block';
 
         const response = await fetch('exercises.json');
@@ -168,18 +283,18 @@
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         exercisesData = await response.json();
-        console.log('Datos cargados:', exercisesData);
+        console.log('Data loaded:', exercisesData);
         populateFilters();
       } catch (error) {
-        console.error('Error al cargar el JSON:', error);
-        document.getElementById('exercise-list').innerHTML = '<p>Error al cargar los ejercicios.</p>';
+        console.error('Error loading JSON:', error);
+        document.getElementById('exercise-list').innerHTML = '<p>Error loading exercises.</p>';
       } finally {
-        // Ocultar el indicador de carga
+        // Hide loading indicator
         document.getElementById('loading').style.display = 'none';
       }
     }
 
-    // Función para llenar los selectores con los niveles y músculos principales
+    // Function to fill the selectors with levels and primary muscles
     function populateFilters() {
       const levelSelect = document.getElementById('level');
       const primaryMusclesSelect = document.getElementById('primaryMuscles');
@@ -187,13 +302,13 @@
       const primaryMuscles = new Set();
 
       exercisesData.forEach(exercise => {
-        levels.add(exercise.level || "No especificado");
+        levels.add(exercise.level || "Not specified");
         exercise.primaryMuscles.forEach(muscle => primaryMuscles.add(muscle));
       });
 
       if (levels.size === 0) {
-        console.warn('No se encontraron niveles en los datos.');
-        levelSelect.innerHTML = '<option value="">Sin niveles</option>';
+        console.warn('No levels found in the data.');
+        levelSelect.innerHTML = '<option value="">No levels</option>';
       } else {
         levels.forEach(level => {
           const option = document.createElement('option');
@@ -204,8 +319,8 @@
       }
 
       if (primaryMuscles.size === 0) {
-        console.warn('No se encontraron músculos principales en los datos.');
-        primaryMusclesSelect.innerHTML = '<option value="">Sin músculos</option>';
+        console.warn('No primary muscles found in the data.');
+        primaryMusclesSelect.innerHTML = '<option value="">No muscles</option>';
       } else {
         primaryMuscles.forEach(muscle => {
           const option = document.createElement('option');
@@ -220,19 +335,19 @@
       displayExercises(levelSelect.value, primaryMusclesSelect.value);
     }
 
-    // Función para mostrar los ejercicios según el nivel y músculo principal seleccionados
+    // Function to display exercises based on selected level and primary muscle
     function displayExercises(level, primaryMuscle) {
       const container = document.getElementById('exercise-list');
       container.innerHTML = '';
 
       const filteredExercises = exercisesData.filter(exercise =>
-        (exercise.level || "No especificado") === level &&
+        (exercise.level || "Not specified") === level &&
         exercise.primaryMuscles.includes(primaryMuscle)
       );
-      console.log(`Mostrando ejercicios para el nivel: ${level} y músculo principal: ${primaryMuscle}`, filteredExercises);
+      console.log(`Displaying exercises for level: ${level} and primary muscle: ${primaryMuscle}`, filteredExercises);
 
       if (filteredExercises.length === 0) {
-        container.innerHTML = '<p>No se encontraron ejercicios para esta combinación.</p>';
+        container.innerHTML = '<p>No exercises found for this combination.</p>';
         return;
       }
 
@@ -249,10 +364,10 @@
         }
 
         div.innerHTML = `
-          <h3>${exercise.name || 'Sin nombre'}</h3>
-          <p><strong>Equipo:</strong> ${exercise.equipment || 'Ninguno'}</p>
-          <p><strong>Fuerza:</strong> ${exercise.force || 'Ninguno'}</p>
-          <p><strong>Nivel:</strong> ${exercise.level || 'No especificado'}</p>
+          <h3>${exercise.name || 'No name'}</h3>
+          <p><strong>Equipment:</strong> ${exercise.equipment || 'None'}</p>
+          <p><strong>Force:</strong> ${exercise.force || 'None'}</p>
+          <p><strong>Level:</strong> ${exercise.level || 'Not specified'}</p>
         `;
 
         div.appendChild(img);
@@ -261,34 +376,35 @@
       });
     }
 
-    // Función para abrir el modal
+    // Function to open the modal
     function openModal(exercise) {
       selectedExercise = exercise;
 
-      // Asignar datos al modal
-      document.getElementById('modal-title').textContent = exercise.name || 'Sin nombre';
-      document.getElementById('modal-equipment').textContent = exercise.equipment || 'Ninguno';
-      document.getElementById('modal-force').textContent = exercise.force || 'Ninguno';
-      document.getElementById('modal-level').textContent = exercise.level || 'No especificado';
+      // Assign data to the modal
+      document.getElementById('modal-title').textContent = exercise.name || 'No name';
+      document.getElementById('modal-equipment').textContent = exercise.equipment || 'None';
+      document.getElementById('modal-force').textContent = exercise.force || 'None';
+      document.getElementById('modal-level').textContent = exercise.level || 'Not specified';
       
-      // Instrucciones
+      // Instructions
       const instructionsList = document.getElementById('modal-instructions');
       instructionsList.innerHTML = exercise.instructions ? 
         exercise.instructions.map(instruction => `<li>${instruction}</li>`).join('') : 
-        '<li>No disponible</li>';
+        '<li>Not available</li>';
       
       document.getElementById('modal-primary-muscles').textContent = exercise.primaryMuscles.join(', ');
       document.getElementById('modal-secondary-muscles').textContent = exercise.secondaryMuscles.join(', ');
 
-      // Imágenes en el modal
+      // Images in the modal
       const modalImagesContainer = document.getElementById('modal-images-container');
-      modalImagesContainer.innerHTML = ''; // Limpiar contenedor de imágenes
+      modalImagesContainer.innerHTML = ''; // Clear image container
       if (exercise.images && exercise.images.length > 0) {
         let index = 0;
         const imgElement = document.createElement('img');
         imgElement.src = `https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/${exercise.images[index]}`;
         imgElement.style.width = '100%';
         imgElement.style.borderRadius = '8px';
+        imgElement.style.objectFit = 'cover';
         modalImagesContainer.appendChild(imgElement);
 
         setInterval(() => {
@@ -297,17 +413,30 @@
         }, 500);
       }
 
-      // Mostrar el modal
+      // Show the modal
       document.getElementById('myModal').style.display = "block";
     }
 
-    // Cerrar el modal
+    // Close the modal
     document.querySelector('.close').addEventListener('click', () => {
       document.getElementById('myModal').style.display = "none";
     });
 
-    // Cargar los ejercicios al inicio
+    // Load exercises on start
     loadExercises();
+
+    // Function to hide the header on scroll
+    let lastScrollTop = 0;
+    window.addEventListener('scroll', function() {
+      const header = document.querySelector('header');
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      if (scrollTop > lastScrollTop) {
+        header.style.top = '-80px'; // Adjust this value based on header height
+      } else {
+        header.style.top = '0';
+      }
+      lastScrollTop = scrollTop;
+    });
   </script>
 </body>
 </html>
